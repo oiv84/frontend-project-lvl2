@@ -1,0 +1,38 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "Command-line files comparing utility",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oiv84/frontend-project-lvl2.git"
+  },
+  "keywords": [
+    "JS",
+    "JavaScript"
+  ],
+  "author": "Ivan Opara <oiv84@icloud.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oiv84/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/oiv84/frontend-project-lvl2#readme",
+  "dependencies": {
+    "debug": "^4.3.3",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@jest/globals": "^27.4.6",
+    "eslint": "^8.7.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^25.7.0",
+    "jest": "^27.4.7",
+    "jest-cli": "^27.4.7",
+    "simple-git-hooks": "^2.7.0"
+  }
+}
