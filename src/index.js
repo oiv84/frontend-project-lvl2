@@ -1,10 +1,10 @@
 import path from 'path';
-import fs from 'fs';
 import _ from 'lodash';
+import parse from './parsers.js';
 
 const compaireTwoFiles = (filepath1, filepath2) => {
-  const file1 = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), filepath1)), 'utf-8');
-  const file2 = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), filepath2)), 'utf-8');
+  const file1 = parse(path.resolve(process.cwd(), filepath1));
+  const file2 = parse(path.resolve(process.cwd(), filepath2));
 
   const keys = _.orderBy(_.union(Object.keys(file1), Object.keys(file2)));
 
