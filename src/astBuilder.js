@@ -1,9 +1,10 @@
 import _ from 'lodash';
 
 const buildAst = (data1, data2) => {
-  const keys = _.orderBy(_.union(Object.keys(data1), Object.keys(data2)));
+  const keys = _.union(Object.keys(data1), Object.keys(data2));
+  const sortedKeys = _.sortBy(keys);
 
-  const ast = keys.map((key) => {
+  const ast = sortedKeys.map((key) => {
     if (_.isPlainObject(data1[key]) && _.isPlainObject(data2[key])) {
       return {
         key,
