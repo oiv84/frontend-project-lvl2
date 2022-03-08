@@ -1,6 +1,6 @@
 import path from 'path';
 
-import stylish from './stylish.js';
+import stylish from './formatters/stylish.js';
 import parse from './parsers.js';
 import buildAst from './astBuilder.js';
 
