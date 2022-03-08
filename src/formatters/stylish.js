@@ -13,7 +13,7 @@ const stringify = (value, spaces = 0) => {
 
 const stylish = (ast, spaces = 0) => {
   const lines = ast.map((node) => {
-    const buildLine = (key, value) => `${indent(spaces)}  ${key} ${node.key}: ${stringify(value, spaces + 1)}`;
+    const buildLine = (char, value) => `${indent(spaces)}  ${char} ${node.key}: ${stringify(value, spaces + 1)}`;
     const stylishMapping = {
       hasChildren: () => (`${indent(spaces)}    ${node.key}: ${stylish(node.value, spaces + 1)}`),
       added: () => (buildLine('+', node.value)),
