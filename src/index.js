@@ -1,6 +1,6 @@
 import path from 'path';
 
-import stylish from './formatters/stylish.js';
+import format from './formatters/index.js';
 import parse from './parsers.js';
 import buildAst from './astBuilder.js';
 
@@ -12,11 +12,9 @@ const genDiff = (filepath1, filepath2, outputFormat = 'stylish') => {
 
   const ast = buildAst(data1, data2);
 
-  const render = {
-    stylish,
-  };
+  const diff = format(ast, outputFormat);
 
-  return render[outputFormat](ast);
+  return diff;
 };
 
 export default genDiff;
