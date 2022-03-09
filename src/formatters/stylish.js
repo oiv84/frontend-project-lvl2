@@ -1,30 +1,62 @@
 import _ from 'lodash';
 
-const indent = (spaces) => ('    '.repeat(spaces));
+const signs = {
+  added: '+ ',
+  removed: '- ',
+  unchanged: '  ',
+};
 
-const stringify = (value, spaces = 0) => {
-  if (!_.isObject(value)) {
-    return value;
+const indent = (spacesCount) => ' '.repeat(spacesCount);
+
+const stringify = (data, depth, space) => {
+  if (!_.isObject(data)) {
+    return data;
   }
-  const lines = _.keys(value).map((node) => `${indent(spaces)}    ${node}: ${stringify(value[node], spaces + 1)}`);
-  const innerValue = lines.join('\n');
-  return `{\n${innerValue}\n${indent(spaces)}}`;
+
+  const fields = Object.entries(data)
+    .map(([key, value]) => `${indent((depth + 1) * space)}${key}: ${stringify(value, depth + 1, space)}`)
+    .join('\n');
+
+  return `{\n${fields}\n${indent(depth * space)}}`;
 };
 
-const stylish = (ast, spaces = 0) => {
-  const lines = ast.map((node) => {
-    const buildLine = (char, value) => `${indent(spaces)}  ${char} ${node.key}: ${stringify(value, spaces + 1)}`;
-    const stylishMapping = {
-      hasChildren: () => (`${indent(spaces)}    ${node.key}: ${stylish(node.value, spaces + 1)}`),
-      added: () => (buildLine('+', node.value)),
-      removed: () => (buildLine('-', node.value)),
-      changed: () => (`${indent(spaces)}  - ${node.key}: ${stringify(node.oldValue, spaces + 1)}\n ${indent(spaces)} + ${node.key}: ${stringify(node.newValue, spaces + 1)}`),
-      unchanged: () => (buildLine(' ', node.value)),
-    };
-    return stylishMapping[node.status]();
-  });
-  const innerValue = lines.join('\n');
-  return `{\n${innerValue}\n${indent(spaces)}}`;
+const stylishMapping = {
+  root: ({ children }, depth, space, stylish) => {
+    const fields = children
+      .flatMap((node) => stylishMapping[node.type](node, depth + 1, space, stylish))
+      .join('\n');
+
+    return `{\n${fields}\n}`;
+  },
+
+  object: ({ key, children }, depth, space, stylish) => {
+    const fields = children
+      .flatMap((node) => stylishMapping[node.type](node, depth + 1, space, stylish))
+      .join('\n');
+
+    return `${indent(depth * space)}${key}: {\n${fields}\n${indent(depth * space)}}`;
+  },
+
+  added: ({ key, value }, depth, space) => (
+    `${indent(depth * space - signs.added.length)}${signs.added}${key}: ${stringify(value, depth, space)}`
+  ),
+
+  removed: ({ key, value }, depth, space) => (
+    `${indent(depth * space - signs.removed.length)}${signs.removed}${key}: ${stringify(value, depth, space)}`
+  ),
+
+  changed: ({ key, oldValue, newValue }, depth, space) => {
+    const field1 = `${indent(depth * space - signs.removed.length)}${signs.removed}${key}: ${stringify(oldValue, depth, space)}`;
+    const field2 = `${indent(depth * space - signs.added.length)}${signs.added}${key}: ${stringify(newValue, depth, space)}`;
+
+    return [field1, field2];
+  },
+
+  unchanged: ({ key, value }, depth, space) => (
+    `${indent(depth * space - signs.unchanged.length)}${signs.unchanged}${key}: ${stringify(value, depth, space)}`
+  ),
 };
 
-export default stylish;
+const stylish = (node, depth, space) => stylishMapping[node.type](node, depth, space, stylish);
+
+export default (ast) => stylish(ast, 0, 4);
