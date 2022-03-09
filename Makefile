@@ -1,8 +1,8 @@
 install: install-deps
 	npx simple-git-hooks
 
-run:
-	bin/nodejs-package.js 10
+start:
+	bin/gendiff.js ./__fixtures__/file1.json ./__fixtures__/file2.json
 
 install-deps:
 	npm ci
@@ -16,5 +16,11 @@ test-coverage:
 lint:
 	npx eslint .
 
+link:
+	npm link
+
+unlink:
+	npm unlink
+
 publish:
-	npm publish
+	npm publish --access public
