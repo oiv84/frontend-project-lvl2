@@ -7,7 +7,12 @@ const formatMapping = {
   json: JSON.stringify,
 };
 
-export default (ast, outputFormat = 'stylish') => {
+export default (ast, outputFormat) => {
   const format = formatMapping[outputFormat];
+
+  if (!format) {
+    throw new Error(`There is no "${outputFormat}" formatter`);
+  }
+
   return format(ast);
 };
