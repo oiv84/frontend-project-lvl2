@@ -4,6 +4,7 @@ import plain from './plain.js';
 const formatMapping = {
   stylish,
   plain,
+  json: JSON.stringify,
 };
 
 export default (ast, outputFormat = 'stylish') => {
