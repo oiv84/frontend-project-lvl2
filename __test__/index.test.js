@@ -9,20 +9,33 @@ const __dirname = path.dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-test('genDiff JSON plain', () => {
-  const filepath1 = getFixturePath('file1.json');
-  const filepath2 = getFixturePath('file2.json');
+const outputFormats = ['stylish', 'plain'];
 
-  const result = readFile('result.txt');
+const filesExtensions = [
+  ['json', 'json'],
+  ['yml', 'yml'],
+  ['yaml', 'yaml'],
 
-  expect(genDiff(filepath1, filepath2)).toEqual(result);
-});
+  ['json', 'yml'],
+  ['json', 'yaml'],
 
-test('genDiff YAML plain', () => {
-  const filepath1 = getFixturePath('file1.yml');
-  const filepath2 = getFixturePath('file2.yml');
+  ['yml', 'json'],
+  ['yaml', 'json'],
+];
 
-  const result = readFile('result.txt');
+describe('genDiff', () => {
+  outputFormats.forEach((outputFormat) => {
+    describe(`${outputFormat} format`, () => {
+      filesExtensions.forEach(([fileExt1, fileExt2]) => {
+        const result = readFile(`result_${outputFormat}.txt`);
 
-  expect(genDiff(filepath1, filepath2)).toEqual(result);
+        test(`Should return correct diff *.${fileExt1} *.${fileExt2} files`, () => {
+          const filePath1 = getFixturePath(`file1.${fileExt1}`);
+          const filePath2 = getFixturePath(`file2.${fileExt2}`);
+
+          expect(genDiff(filePath1, filePath2, outputFormat)).toBe(result);
+        });
+      });
+    });
+  });
 });
