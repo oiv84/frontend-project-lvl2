@@ -20,6 +20,8 @@ const stringify = (data, depth, space) => {
   return `{\n${fields}\n${indent(depth * space)}}`;
 };
 
+const buildLine = (key, value, depth, space, type) => `${indent(depth * space - signs[type].length)}${signs[type]}${key}: ${stringify(value, depth, space)}`;
+
 const stylishMapping = {
   root: ({ children }, depth, space, stylish) => {
     const fields = children
@@ -37,24 +39,18 @@ const stylishMapping = {
     return `${indent(depth * space)}${key}: {\n${fields}\n${indent(depth * space)}}`;
   },
 
-  added: ({ key, value }, depth, space) => (
-    `${indent(depth * space - signs.added.length)}${signs.added}${key}: ${stringify(value, depth, space)}`
-  ),
+  added: ({ key, value }, depth, space) => buildLine(key, value, depth, space, 'added'),
 
-  removed: ({ key, value }, depth, space) => (
-    `${indent(depth * space - signs.removed.length)}${signs.removed}${key}: ${stringify(value, depth, space)}`
-  ),
+  removed: ({ key, value }, depth, space) => buildLine(key, value, depth, space, 'removed'),
 
   changed: ({ key, oldValue, newValue }, depth, space) => {
-    const field1 = `${indent(depth * space - signs.removed.length)}${signs.removed}${key}: ${stringify(oldValue, depth, space)}`;
-    const field2 = `${indent(depth * space - signs.added.length)}${signs.added}${key}: ${stringify(newValue, depth, space)}`;
+    const field1 = buildLine(key, oldValue, depth, space, 'removed');
+    const field2 = buildLine(key, newValue, depth, space, 'added');
 
     return [field1, field2];
   },
 
-  unchanged: ({ key, value }, depth, space) => (
-    `${indent(depth * space - signs.unchanged.length)}${signs.unchanged}${key}: ${stringify(value, depth, space)}`
-  ),
+  unchanged: ({ key, value }, depth, space) => buildLine(key, value, depth, space, 'unchanged'),
 };
 
 const stylish = (node, depth, space) => stylishMapping[node.type](node, depth, space, stylish);
