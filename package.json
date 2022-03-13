@@ -2,10 +2,10 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "Command-line files comparing utility",
-  "main": "src/index.js",
+  "main": "index.js",
   "type": "module",
   "bin": {
-    "gendiff": "index.js"
+    "gendiff": "bin/gendiff.js"
   },
   "scripts": {
     "test": "npx jest --bail"
