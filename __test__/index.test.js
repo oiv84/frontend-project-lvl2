@@ -10,15 +10,9 @@ const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', 
 
 const filesExtensions = ['json', 'yml', 'yaml'];
 
-let resultStylish;
-let resultPlain;
-let resultJson;
-
-beforeAll(() => {
-  resultStylish = fs.readFileSync(getFixturePath('result_stylish.txt'), 'utf-8');
-  resultPlain = fs.readFileSync(getFixturePath('result_plain.txt'), 'utf-8');
-  resultJson = fs.readFileSync(getFixturePath('result_json.txt'), 'utf-8');
-});
+const resultStylish = fs.readFileSync(getFixturePath('result_stylish.txt'), 'utf-8');
+const resultPlain = fs.readFileSync(getFixturePath('result_plain.txt'), 'utf-8');
+const resultJson = fs.readFileSync(getFixturePath('result_json.txt'), 'utf-8');
 
 describe('Should return correct diff for', () => {
   test.each(filesExtensions)('%p files', (extension) => {
