@@ -7,35 +7,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-const outputFormats = ['stylish', 'plain', 'json'];
+const filesExtensions = ['json', 'yml', 'yaml'];
 
-const filesExtensions = [
-  ['json', 'json'],
-  ['yml', 'yml'],
-  ['yaml', 'yaml'],
+let resultStylish;
+let resultPlain;
+let resultJson;
 
-  ['json', 'yml'],
-  ['json', 'yaml'],
+beforeAll(() => {
+  resultStylish = fs.readFileSync(getFixturePath('result_stylish.txt'), 'utf-8');
+  resultPlain = fs.readFileSync(getFixturePath('result_plain.txt'), 'utf-8');
+  resultJson = fs.readFileSync(getFixturePath('result_json.txt'), 'utf-8');
+});
 
-  ['yml', 'json'],
-  ['yaml', 'json'],
-];
+describe('Should return correct diff for', () => {
+  test.each(filesExtensions)('%p files', (extension) => {
+    const file1 = getFixturePath(`file1.${extension}`);
+    const file2 = getFixturePath(`file2.${extension}`);
 
-describe('genDiff', () => {
-  outputFormats.forEach((outputFormat) => {
-    describe(`${outputFormat} format`, () => {
-      filesExtensions.forEach(([fileExt1, fileExt2]) => {
-        const result = readFile(`result_${outputFormat}.txt`);
-
-        test(`Should return correct diff *.${fileExt1} *.${fileExt2} files`, () => {
-          const filePath1 = getFixturePath(`file1.${fileExt1}`);
-          const filePath2 = getFixturePath(`file2.${fileExt2}`);
-
-          expect(genDiff(filePath1, filePath2, outputFormat)).toBe(result);
-        });
-      });
-    });
+    expect(genDiff(file1, file2, 'stylish')).toEqual(resultStylish.toString());
+    expect(genDiff(file1, file2, 'plain')).toEqual(resultPlain.toString());
+    expect(genDiff(file1, file2, 'json')).toEqual(resultJson.toString());
   });
 });
