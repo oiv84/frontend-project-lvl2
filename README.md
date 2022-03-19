@@ -6,8 +6,6 @@
 # Difference Generator
 CLI app, which compares two configuration files and shows a difference.
 The utility supports the following input data formats: json, yaml/yml. The output report can be generated in one of the following formats: stylish (default), plain, json.
-
-### Setup
 ### Setup
 
 ```sh
